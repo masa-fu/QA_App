@@ -30,12 +30,4 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true" />
 
-    <Button
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_toEndOf="@+id/imageView"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/favorite_off"
-        android:id="@+id/favorite_button"/>
-
 </RelativeLayout>

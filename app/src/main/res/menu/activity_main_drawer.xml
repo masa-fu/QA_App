@@ -15,4 +15,12 @@
             android:id="@+id/nav_compter"
             android:title="コンピューター"/>
     </group>
+
+    <item android:title = "お気に入り">
+        <menu>
+            <item
+                android:id="@+id/nav_favorite"
+                android:title="お気に入り"/>
+        </menu>
+    </item>
 </menu>

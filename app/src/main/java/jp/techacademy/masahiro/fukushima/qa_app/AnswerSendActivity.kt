@@ -30,6 +30,9 @@ class AnswerSendActivity : AppCompatActivity(), View.OnClickListener, DatabaseRe
 
         // UIの準備
         sendButton.setOnClickListener(this)
+
+        // UIの初期設定
+        title = "回答作成"
     }
 
     override fun onComplete(databaseError: DatabaseError?, databaseReference: DatabaseReference) {
