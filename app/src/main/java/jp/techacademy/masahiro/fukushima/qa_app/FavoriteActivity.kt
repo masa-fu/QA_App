@@ -22,55 +22,6 @@ class FavoriteActivity : AppCompatActivity() {
     private lateinit var mAdapter: QuestionsListAdapter
     private var mGenre = 0
     private lateinit var mFavoriteRef: DatabaseReference
-    private lateinit var mQuestion: Question
-
-    private val mQuestionEventListener = object : ChildEventListener {
-        override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-            val map = dataSnapshot.value as Map<String, String>
-            val title = map["title"] ?: ""
-            val body = map["body"] ?: ""
-            val name = map["name"] ?: ""
-            val uid = map["uid"] ?: ""
-            val imageString = map["image"] ?: ""
-
-            val bytes =
-                if (imageString.isNotEmpty()) {
-                    Base64.decode(imageString, Base64.DEFAULT)
-                } else {
-                    byteArrayOf()
-                }
-
-            val answerArrayList = ArrayList<Answer>()
-            val answerMap = map["answers"] as Map<String, String>?
-            if (answerMap != null) {
-                for (key in answerMap.keys) {
-                    val temp = answerMap[key] as Map<String, String>
-                    val answerBody = temp["body"] ?: ""
-                    val answerName = temp["name"] ?: ""
-                    val answerUid = temp["uid"] ?: ""
-                    val answer = Answer(answerBody, answerName, answerUid, key)
-                    answerArrayList.add(answer)
-                }
-            }
-
-            val question = Question(title, body, name, uid, dataSnapshot.key ?: "",
-                mGenre, bytes, answerArrayList)
-            mQuestionArrayList.add(question)
-            mAdapter.notifyDataSetChanged()
-        }
-
-        override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
-        }
-
-        override fun onChildRemoved(p0: DataSnapshot) {
-        }
-
-        override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-        }
-
-        override fun onCancelled(p0: DatabaseError) {
-        }
-    }
 
     private val mEventListener = object : ChildEventListener {
         override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
@@ -83,15 +34,9 @@ class FavoriteActivity : AppCompatActivity() {
             val questionId = dataSnapshot.key
 
             val mQuestionRef = dataBaseReference.child(ContentsPATH).child(genre).child(questionId.toString())
-            //mQuestionRef.addChildEventListener(mQuestionEventListener)
             mQuestionRef.addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    // snapshot.valueをMap<* ,*>?にキャスト
-                    val data = snapshot.value as Map<* ,*>?
-                    // nameに紐づくvalueを取得し、String型にキャスト
-                    //saveName(data!![NameKEY] as String)
-
-
+                    
                     val map = snapshot.value as Map<String, String>
 
                     val title = map["title"] ?: ""
