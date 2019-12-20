@@ -140,6 +140,12 @@ class FavoriteActivity : AppCompatActivity() {
 
             mAdapter.setQuestionArrayList(mQuestionArrayList)
             mListView.adapter = mAdapter
+
+            val id = FirebaseAuth.getInstance().currentUser!!.uid
+            val dataBaseReference = FirebaseDatabase.getInstance().reference
+            mFavoriteRef =
+                dataBaseReference.child(FavoritesPATH).child(id)
+            mFavoriteRef.addChildEventListener(mEventListener)
         }
     }
 }
