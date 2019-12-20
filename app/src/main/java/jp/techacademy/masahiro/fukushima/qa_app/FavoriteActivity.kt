@@ -20,7 +20,6 @@ class FavoriteActivity : AppCompatActivity() {
     private lateinit var mListView: ListView
     private lateinit var mQuestionArrayList: ArrayList<Question>
     private lateinit var mAdapter: QuestionsListAdapter
-    private var mGenre = 0
     private lateinit var mFavoriteRef: DatabaseReference
 
     private val mEventListener = object : ChildEventListener {
@@ -36,7 +35,7 @@ class FavoriteActivity : AppCompatActivity() {
             val mQuestionRef = dataBaseReference.child(ContentsPATH).child(genre).child(questionId.toString())
             mQuestionRef.addListenerForSingleValueEvent(object: ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    
+
                     val map = snapshot.value as Map<String, String>
 
                     val title = map["title"] ?: ""
@@ -105,11 +104,14 @@ class FavoriteActivity : AppCompatActivity() {
         mQuestionArrayList = ArrayList<Question>()
         mAdapter.notifyDataSetChanged()
 
+        mAdapter.setQuestionArrayList(mQuestionArrayList)
+        mListView.adapter = mAdapter
+
         mListView.setOnItemClickListener { parent, view, position, id ->
             // Questionのインスタンスを渡して質問詳細画面を起動する
             val intent = Intent(applicationContext, QuestionDetailActivity::class.java)
             intent.putExtra("question", mQuestionArrayList[position])
-            intent.putExtra("genre", mGenre)
+            intent.putExtra("genre", mQuestionArrayList[position].genre)
             startActivity(intent)
         }
 
@@ -120,6 +122,24 @@ class FavoriteActivity : AppCompatActivity() {
             mFavoriteRef =
                 dataBaseReference.child(FavoritesPATH).child(id)
             mFavoriteRef.addChildEventListener(mEventListener)
+        }
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            // Firebase
+            mDatabaseReference = FirebaseDatabase.getInstance().reference
+
+            // ListViewの準備
+            mListView = findViewById(R.id.favorite_listView)
+            mAdapter = QuestionsListAdapter(this)
+            mQuestionArrayList = ArrayList<Question>()
+            mAdapter.notifyDataSetChanged()
+
+            mAdapter.setQuestionArrayList(mQuestionArrayList)
+            mListView.adapter = mAdapter
         }
     }
 }
